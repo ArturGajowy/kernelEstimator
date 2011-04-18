@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Class-Path: commons-logging-1.1.1.jar guava-r07.jar gluegen-rt-natives
+ -windows-amd64.jar gluegen-rt.jar jocl-natives-windows-amd64.jar jocl
+ .jar jogl-natives-windows-amd64.jar jogl.all.jar nativewindow-natives
+ -windows-amd64.jar nativewindow.all.jar newt-natives-windows-amd64.ja
+ r newt.all.jar hamcrest-core-1.1.jar spring-asm-3.0.5.RELEASE.jar jun
+ it-4.8.2.jar spring-core-3.0.5.RELEASE.jar
+Main-Class: Main
+
