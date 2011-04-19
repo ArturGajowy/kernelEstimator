@@ -60,8 +60,8 @@ public class SimpleGpuBasedEstimationEngine implements EstimationEngine {
             long time = nanoTime();
             queue.putWriteBuffer(dataPointsBuffer, ASYNCHRONOUS)
                 .putTask(kernel)
-                .putReadBuffer(estimatesBuffer, ASYNCHRONOUS)
                 .putBarrier()
+                .putReadBuffer(estimatesBuffer, SYNCHRONOUS)
             ;
             time = nanoTime() - time;
 
