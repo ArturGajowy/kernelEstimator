@@ -11,10 +11,19 @@ echo 'Extracting:'
 tar -zxvf $mavenArchive
 
 mavenDirectory=apache-maven-2.2.1
+m2HomeExport="export M2_HOME=`pwd`/apache-maven-2.2.1"
+pathExport='export PATH=$M2_HOME/bin:$PATH'
 echo
 echo 'For maven to work, M2_HOME must be defined and PATH must contain it'
 echo 'For current maven location you can use the following exports:'
-echo "export M2_HOME=`pwd`/apache-maven-2.2.1"
-echo 'export PATH=$M2_HOME/bin:$PATH'
+echo $m2HomeExport
+echo $pathExport
 echo
 echo 'To check if maven works, run mvn --version'
+
+if [ $1='doExports' ]
+then
+    eval $m2HomeExport
+    eval $pathExport
+    echo 'The exports mentioned above have been made, mvn should work now.'
+fi
