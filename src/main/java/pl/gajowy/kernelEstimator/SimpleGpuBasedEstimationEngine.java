@@ -23,11 +23,11 @@ public class SimpleGpuBasedEstimationEngine implements EstimationEngine {
     public float[] estimate(float bandwidth, float[] dataPoints, SamplingSettings samplingSettings) {
 
 
-        CLPlatform platform = CLPlatform.getDefault(hasGpuDeviceFilter());
-        verifyPlatformAvailable(platform);
-        CLContext context = CLContext.create(platform, CLDevice.Type.GPU);
+//        CLPlatform platform = CLPlatform.getDefault(hasGpuDeviceFilter());
+//        verifyPlatformAvailable(platform);
+//        CLContext context = CLContext.create(platform, CLDevice.Type.GPU);
 
-//        CLContext context = CLContext.create();
+        CLContext context = CLContext.create();
         System.out.println(context);
 
         // always make sure to release the context under all circumstances
@@ -83,7 +83,7 @@ public class SimpleGpuBasedEstimationEngine implements EstimationEngine {
 
     private void verifyPlatformAvailable(CLPlatform platform) {
         if (platform == null) {
-            throw new RuntimeException("No platforms offering GPU defices found, can't perform computations.");
+            throw new RuntimeException("No platforms offering GPU devices found, can't perform computations.");
         }
     }
 

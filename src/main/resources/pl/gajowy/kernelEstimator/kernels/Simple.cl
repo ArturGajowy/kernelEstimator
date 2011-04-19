@@ -15,12 +15,15 @@ kernel void estimate(
     private float PI
 ) {
     float estimatedPoint;
+    float estimate;
     for (int i = 0; i < sampleSize; i++) {
         estimatedPoint = startPoint + i * density;
+        estimate = 0;
         for (int j = 0; j < dataPointsSize; j++) {
-            estimationPoints[i] += (
+            estimate += (
                 gaussianKernel((estimatedPoint - dataPoints[j]) / bandwidth, PI) / dataPointsSize
             );
         }
+        estimationPoints[i] = estimate;
     }
 }
