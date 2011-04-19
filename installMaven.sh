@@ -19,11 +19,8 @@ echo 'For current maven location you can use the following exports:'
 echo $m2HomeExport
 echo $pathExport
 echo
+eval $m2HomeExport
+eval $pathExport
+echo 'If you source'd this script, the mentioned exports have been made.'
 echo 'To check if maven works, run mvn --version'
 
-if [ $1='doExports' ]
-then
-    eval $m2HomeExport
-    eval $pathExport
-    echo 'The exports mentioned above have been made, mvn should work now.'
-fi
