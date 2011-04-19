@@ -1,10 +1,9 @@
-buildLatest: projectDownloaded
+buildLatest:
 	git pull
 	mvn package
 
-downloadProject:
+exportLibraryPath:
+	export LD_LIBRARY_PATH=target/lib
 
-	touch projectDownloaded
-
-projectDownloaded:
-	make downloadProject
+test:
+	mvn test
