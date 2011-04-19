@@ -21,5 +21,5 @@ echo $pathExport;
 echo;
 eval $m2HomeExport;
 eval $pathExport;
-echo 'If you source'd this script, the mentioned exports have been made.';
-echo 'To check if maven works, run mvn --version';1
+echo 'If you source-d this script, the mentioned exports have been made.';
+echo 'To check if maven works, run mvn --version';

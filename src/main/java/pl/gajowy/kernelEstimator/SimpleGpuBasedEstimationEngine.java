@@ -58,10 +58,10 @@ public class SimpleGpuBasedEstimationEngine implements EstimationEngine {
             // asynchronous write of data to GPU device,
             // followed by blocking read to get the computed results back.
             long time = nanoTime();
-            queue.putWriteBuffer(dataPointsBuffer, ASYNCHRONOUS);
-            queue.putTask(kernel);
-            queue.putReadBuffer(estimatesBuffer, SYNCHRONOUS)
-//                    .putBarrier()
+            queue.putWriteBuffer(dataPointsBuffer, ASYNCHRONOUS)
+                .putTask(kernel)
+                .putReadBuffer(estimatesBuffer, ASYNCHRONOUS)
+                .putBarrier()
             ;
             time = nanoTime() - time;
 
