@@ -9,13 +9,17 @@ public enum ErrorClass {
     E05,
     E06,
     E07,
-    E08_OR_SMALLER;
+    E08,
+    E09_OR_SMALLER;
+
+    public static final int MIN_ORDER = 4;
+    public static final int MAX_ORDER = 9;
 
     public static ErrorClass forValue(float errorValue) {
         double errorOrder = -log10(abs(errorValue));
         int integerOrder = (int) Math.ceil(errorOrder);
-        int truncatedOrder = max(4, min(integerOrder, 8));
-        int classIndex = truncatedOrder - values().length + 1;
+        int truncatedOrder = max(MIN_ORDER, min(integerOrder, MAX_ORDER));
+        int classIndex = truncatedOrder - MIN_ORDER;
         return values()[classIndex];
     }
 }

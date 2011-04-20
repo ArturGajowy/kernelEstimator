@@ -46,9 +46,11 @@ public class ErrorClassTest {
                   isErrorClassForValue(E06, .000002f),
                   isErrorClassForValue(E07, .0000001f),
                   isErrorClassForValue(E07, .0000002f),
-                  isErrorClassForValue(E08_OR_SMALLER, .00000001f),
-                  isErrorClassForValue(E08_OR_SMALLER, .00000002f),
-                  isErrorClassForValue(E08_OR_SMALLER, .000000001f)
+                  isErrorClassForValue(E08, .0000000100001f),
+                  isErrorClassForValue(E08, .00000002f),
+                  isErrorClassForValue(E09_OR_SMALLER, .000000001f),
+                  isErrorClassForValue(E09_OR_SMALLER, .000000002f),
+                  isErrorClassForValue(E09_OR_SMALLER, .0000000001f)
           );
     }
 
