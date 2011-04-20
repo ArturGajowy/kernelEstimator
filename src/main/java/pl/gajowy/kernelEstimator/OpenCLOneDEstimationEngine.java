@@ -39,7 +39,6 @@ public class OpenCLOneDEstimationEngine implements EstimationEngine {
                     .putArg(dataPointsBuffer).putArg(dataPointsBuffer.getCLCapacity())
                     .putArg(samplingSettings.getStartPoint())
                     .putArg(samplingSettings.getDensity())
-                    .putArg(samplingSettings.getSampleSize())
                     .putArg(estimatesBuffer)
                     .putArg(new Float(PI).floatValue())
             ;
@@ -48,7 +47,7 @@ public class OpenCLOneDEstimationEngine implements EstimationEngine {
 
             long time = nanoTime();
             queue.putWriteBuffer(dataPointsBuffer, ASYNCHRONOUS)
-                .putTask(kernel, events)
+                .put1DRangeKernel(kernel, 0, samplingSettings.getSampleSize(), 1, events)
                 .putBarrier()
                 .putReadBuffer(estimatesBuffer, SYNCHRONOUS)
                 .finish()
