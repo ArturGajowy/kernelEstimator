@@ -78,9 +78,7 @@ public class SimpleGpuBasedEstimationEngine implements EstimationEngine {
         } catch (CLException e) {
             throw e; //TODO some common exception class for all failures of this method?
         } finally {
-
             // cleanup all resources associated with this context.
-
             context.release();
         }
     }

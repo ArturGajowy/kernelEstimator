@@ -22,7 +22,9 @@ public class Main {
         CalculationOutcome calculationOutcome = kernelEstimatorSampling.calculateUsing(new SimpleGpuBasedEstimationEngine());
         writeOut(calculationOutcome.getEstimationPoints());
         if (arguments.showTimesDefined()) {
-            System.out.println(calculationOutcome.getElapsedTime());
+            System.out.println("Time: " + calculationOutcome.getElapsedTime() / 1000);
+            Long profiledTime = calculationOutcome.getProfiledTime();
+            System.out.println("Time (from profiling): " + (profiledTime == null ? "NA" : "" + (profiledTime / 1000)));
         }
         if (arguments.verifyFlagDefined()) {
             VerificationOutcome verificationOutcome = new Verifier().verify(kernelEstimatorSampling, calculationOutcome);
