@@ -3,12 +3,12 @@ package pl.gajowy.kernelEstimator;
 import com.google.common.base.Preconditions;
 
 import java.util.EnumMap;
-import java.util.Map;
 
 public class Verifier {
-    public VerificationOutcome verify(KernelEstimatorSampling kernelEstimatorSampling, float[] estimationPoints) {
-        float[] reference = kernelEstimatorSampling.calculateUsing(new SimpleEstimationEngine());
-        float[] errors = computeErrors(estimationPoints, reference);
+
+    public VerificationOutcome verify(KernelEstimatorSampling kernelEstimatorSampling, CalculationOutcome calculationOutcome) {
+        CalculationOutcome reference = kernelEstimatorSampling.calculateUsing(new SimpleEstimationEngine());
+        float[] errors = computeErrors(calculationOutcome.getEstimationPoints(), reference.getEstimationPoints());
         return new VerificationOutcome(errorCountsByClass(errors));
     }
 
@@ -17,8 +17,6 @@ public class Verifier {
         float[] errors = new float[estimationPoints.length];
         for (int i = 0; i < estimationPoints.length; i++) {
             errors[i] = estimationPoints[i] - reference[i];
-
-            System.out.println(reference[i] + "\t" + estimationPoints[i]);
         }
         return errors;
     }

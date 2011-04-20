@@ -1,40 +1,30 @@
 package pl.gajowy.kernelEstimator;
 
-import com.google.common.base.Preconditions;
 import com.jogamp.opencl.*;
 import com.jogamp.opencl.util.Filter;
 import org.springframework.core.io.ClassPathResource;
 
 import java.io.IOException;
 import java.nio.FloatBuffer;
-import java.util.Random;
 
+import static com.jogamp.opencl.CLCommandQueue.Mode.PROFILING_MODE;
+import static com.jogamp.opencl.CLMemory.Mem.READ_ONLY;
+import static com.jogamp.opencl.CLMemory.Mem.WRITE_ONLY;
 import static java.lang.Math.PI;
-import static java.lang.Math.min;
 import static java.lang.System.nanoTime;
-import static java.lang.System.out;
-
-import static com.jogamp.opencl.CLMemory.Mem.*;
 
 public class SimpleGpuBasedEstimationEngine implements EstimationEngine {
     private static final boolean ASYNCHRONOUS = false;
     private static final boolean SYNCHRONOUS = true;
 
-    public float[] estimate(float bandwidth, float[] dataPoints, SamplingSettings samplingSettings) {
-
-
-//        CLPlatform platform = CLPlatform.getDefault(hasGpuDeviceFilter());
-//        verifyPlatformAvailable(platform);
-//        CLContext context = CLContext.create(platform, CLDevice.Type.GPU);
+    public CalculationOutcome estimate(float bandwidth, float[] dataPoints, SamplingSettings samplingSettings) {
 
         CLContext context = CLContext.create();
         System.out.println(context);
 
-        // always make sure to release the context under all circumstances
-        // not needed for this particular sample but recommented
         try {
             CLDevice device = context.getMaxFlopsDevice();
-            CLCommandQueue queue = device.createCommandQueue();
+            CLCommandQueue queue = device.createCommandQueue(PROFILING_MODE);
 
             //TODO program path
             CLProgram program = context.createProgram(new ClassPathResource("/pl/gajowy/kernelEstimator/kernels/Simple.cl").getInputStream()).build();
@@ -55,21 +45,28 @@ public class SimpleGpuBasedEstimationEngine implements EstimationEngine {
                     .putArg(new Float(PI).floatValue())
             ;
 
-            // asynchronous write of data to GPU device,
-            // followed by blocking read to get the computed results back.
+            final CLEventList events = new CLEventList(1);
+
             long time = nanoTime();
             queue.putWriteBuffer(dataPointsBuffer, ASYNCHRONOUS)
-                .putTask(kernel)
+                .putTask(kernel, events)
                 .putBarrier()
                 .putReadBuffer(estimatesBuffer, SYNCHRONOUS)
-            ;
+                .finish()
+                .release();
+
             time = nanoTime() - time;
+
+            CLEvent probe = events.getEvent(0);
+            long timeFromProfiling = probe.getProfilingInfo(CLEvent.ProfilingCommand.END)
+                      - probe.getProfilingInfo(CLEvent.ProfilingCommand.START);
+            events.release();
 
             FloatBuffer resultBuffer = estimatesBuffer.getBuffer();
             resultBuffer.rewind();
             float[] result = new float[resultBuffer.capacity()];
             resultBuffer.get(result);
-            return result;
+            return new CalculationOutcome(result, time, timeFromProfiling);
 
         } catch (IOException e) {
             throw new CouldNotReadKernelSourceException(e);
@@ -79,19 +76,5 @@ public class SimpleGpuBasedEstimationEngine implements EstimationEngine {
             // cleanup all resources associated with this context.
             context.release();
         }
-    }
-
-    private void verifyPlatformAvailable(CLPlatform platform) {
-        if (platform == null) {
-            throw new RuntimeException("No platforms offering GPU devices found, can't perform computations.");
-        }
-    }
-
-    private Filter<CLPlatform> hasGpuDeviceFilter() {
-        return new Filter<CLPlatform>() {
-            public boolean accept(CLPlatform item) {
-                return item.listCLDevices(CLDevice.Type.GPU).length > 0;
-            }
-        };
     }
 }

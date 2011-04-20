@@ -17,9 +17,10 @@ public class KernelEstimatorSampling {
     private void verifyArguments(float bandwidth, float[] dataPoints, SamplingSettings samplingSettings) {
         Preconditions.checkArgument(bandwidth > 0, "bandwidth must be a positive number");
         Preconditions.checkArgument(dataPoints.length > 0, "dataPoints must have positive length");
+        Preconditions.checkNotNull(samplingSettings);
     }
 
-    public float[] calculateUsing(EstimationEngine estimationEngine) {
+    public CalculationOutcome calculateUsing(EstimationEngine estimationEngine) {
         return estimationEngine.estimate(bandwidth, dataPoints, samplingSettings);
     }
 }
