@@ -66,6 +66,11 @@ public class SimpleGpuBasedEstimationEngine implements EstimationEngine {
             resultBuffer.rewind();
             float[] result = new float[resultBuffer.capacity()];
             resultBuffer.get(result);
+
+
+            dataPointsBuffer.release();
+            estimatesBuffer.release();
+
             return new CalculationOutcome(result, time, timeFromProfiling);
 
         } catch (IOException e) {
@@ -73,7 +78,9 @@ public class SimpleGpuBasedEstimationEngine implements EstimationEngine {
         } catch (CLException e) {
             throw e; //TODO some common exception class for all failures of this method?
         } finally {
+
             // cleanup all resources associated with this context.
+
             context.release();
         }
     }
