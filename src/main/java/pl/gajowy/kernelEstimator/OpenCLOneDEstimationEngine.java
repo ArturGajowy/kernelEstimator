@@ -12,7 +12,7 @@ import static com.jogamp.opencl.CLMemory.Mem.WRITE_ONLY;
 import static java.lang.Math.PI;
 import static java.lang.System.nanoTime;
 
-public class SimpleGpuBasedEstimationEngineWithNativeOps implements EstimationEngine {
+public class OpenCLOneDEstimationEngine implements EstimationEngine {
     private static final boolean ASYNCHRONOUS = false;
     private static final boolean SYNCHRONOUS = true;
 
@@ -26,7 +26,7 @@ public class SimpleGpuBasedEstimationEngineWithNativeOps implements EstimationEn
             CLCommandQueue queue = device.createCommandQueue(PROFILING_MODE);
 
             //TODO program path
-            CLProgram program = context.createProgram(new ClassPathResource("/pl/gajowy/kernelEstimator/kernels/SimpleWithNativeOps.cl").getInputStream()).build();
+            CLProgram program = context.createProgram(new ClassPathResource("/pl/gajowy/kernelEstimator/kernels/OneD.cl").getInputStream()).build();
 
             CLBuffer<FloatBuffer> dataPointsBuffer = context.createFloatBuffer(dataPoints.length, READ_ONLY);
             dataPointsBuffer.getBuffer().put(dataPoints);

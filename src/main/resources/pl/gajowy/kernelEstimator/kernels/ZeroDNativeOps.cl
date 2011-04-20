@@ -1,7 +1,5 @@
-//#pragma opencl cl_khr_byte_addressable_store : enable
 
-
-/*inline*/ float gaussianKernel(float x, float PI) {
+float gaussianKernel(float x, float PI) {
     return native_exp(- x * x / 2) / native_sqrt(2 * PI);
 }
 

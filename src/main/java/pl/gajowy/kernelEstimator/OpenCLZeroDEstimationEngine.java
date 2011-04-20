@@ -1,7 +1,6 @@
 package pl.gajowy.kernelEstimator;
 
 import com.jogamp.opencl.*;
-import com.jogamp.opencl.util.Filter;
 import org.springframework.core.io.ClassPathResource;
 
 import java.io.IOException;
@@ -13,7 +12,7 @@ import static com.jogamp.opencl.CLMemory.Mem.WRITE_ONLY;
 import static java.lang.Math.PI;
 import static java.lang.System.nanoTime;
 
-public class SimpleGpuBasedEstimationEngine implements EstimationEngine {
+public class OpenCLZeroDEstimationEngine implements EstimationEngine {
     private static final boolean ASYNCHRONOUS = false;
     private static final boolean SYNCHRONOUS = true;
 
@@ -27,7 +26,7 @@ public class SimpleGpuBasedEstimationEngine implements EstimationEngine {
             CLCommandQueue queue = device.createCommandQueue(PROFILING_MODE);
 
             //TODO program path
-            CLProgram program = context.createProgram(new ClassPathResource("/pl/gajowy/kernelEstimator/kernels/Simple.cl").getInputStream()).build();
+            CLProgram program = context.createProgram(new ClassPathResource("/pl/gajowy/kernelEstimator/kernels/ZeroD.cl").getInputStream()).build();
 
             CLBuffer<FloatBuffer> dataPointsBuffer = context.createFloatBuffer(dataPoints.length, READ_ONLY);
             dataPointsBuffer.getBuffer().put(dataPoints);

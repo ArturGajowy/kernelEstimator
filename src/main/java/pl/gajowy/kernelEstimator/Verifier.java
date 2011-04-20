@@ -1,6 +1,5 @@
 package pl.gajowy.kernelEstimator;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 
 import java.util.EnumMap;
@@ -8,7 +7,7 @@ import java.util.EnumMap;
 public class Verifier {
 
     public VerificationOutcome verify(KernelEstimatorSampling kernelEstimatorSampling, CalculationOutcome calculationOutcome) {
-        CalculationOutcome reference = kernelEstimatorSampling.calculateUsing(new SimpleEstimationEngine());
+        CalculationOutcome reference = kernelEstimatorSampling.calculateUsing(new CpuBasedEstimationEngine());
         float[] errors = computeErrors(calculationOutcome.getEstimationPoints(), reference.getEstimationPoints());
         return new VerificationOutcome(errorCountsByClass(errors));
     }

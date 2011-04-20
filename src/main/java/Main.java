@@ -19,7 +19,7 @@ public class Main {
         float h = arguments.getBandwidth();
 
         KernelEstimatorSampling kernelEstimatorSampling = new KernelEstimatorSampling(h, dataPoints, samplingSettings);
-        CalculationOutcome calculationOutcome = kernelEstimatorSampling.calculateUsing(new SimpleGpuBasedEstimationEngineWithNativeOps());
+        CalculationOutcome calculationOutcome = kernelEstimatorSampling.calculateUsing(new OpenCLZeroDWIthInlineEstimationEngine());
         writeOut(calculationOutcome.getEstimationPoints());
         if (arguments.showTimesDefined()) {
             System.out.println("Time: " + calculationOutcome.getElapsedTime() / 1000);

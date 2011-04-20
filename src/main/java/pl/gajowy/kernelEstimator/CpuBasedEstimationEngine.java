@@ -3,7 +3,7 @@ package pl.gajowy.kernelEstimator;
 import static java.lang.Math.*;
 import static java.lang.System.nanoTime;
 
-public class SimpleEstimationEngine implements EstimationEngine {
+public class CpuBasedEstimationEngine implements EstimationEngine {
 
     public CalculationOutcome estimate(float bandwidth, float[] dataPoints, SamplingSettings samplingSettings) {
         float[] estimationPoints = new float[samplingSettings.getSampleSize()];
