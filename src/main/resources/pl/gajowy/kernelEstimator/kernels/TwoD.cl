@@ -14,8 +14,11 @@ kernel void estimate(
 ) {
     int i = get_global_id(0);
     int j = get_global_id(1);
+
+    //host has to assure that dataPointsSize >= get_local_size(1)
     int partialEstimatesSize = get_local_size(1);
-    int segmentSize = dataPointsSize / partialEstimatesSize; //host has to assure that dataPointsSize >= get_local_size(1)
+    int segmentSize = dataPointsSize / partialEstimatesSize + (dataPointsSize % partialEstimatesSize == 0 ? 0 : 1);
+
     int segmentStart = j * segmentSize;
     int segmentEnd = min(dataPointsSize, (j + 1) * segmentSize);
 

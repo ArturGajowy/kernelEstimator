@@ -1,11 +1,11 @@
 package pl.gajowy.kernelEstimator;
 
 public class Maths {
-    public static int biggestPowerOfTwoWithin(int x) {
-        int bigPowerOfTwo = 1 << 30;
-        while (bigPowerOfTwo > x) {
-            bigPowerOfTwo >>= 1;
+    public static int firstPowerOfTwoBeingAtLeast(int x) {
+        int powerOfTwo = 1;
+        while (powerOfTwo < x) {
+            powerOfTwo <<= 1;
         }
-        return bigPowerOfTwo;
+        return powerOfTwo;
     }
 }
