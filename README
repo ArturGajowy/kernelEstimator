@@ -1,0 +1,17 @@
+Orientacyjne czasy uzyskane przez poszczególne wersje rozwiąznaia na komputerze nvidia2:
+
+Używane pliki z danymi to data.dat (10k danych) i bigData.dat (100k danych)
+
+wersja                                      dane            xmin    xmax    den     h       time [ms]
+OpenCLZeroDEstimationEngine                 data.dat        0       1000    1       100     4650
+OpenCLZeroDEstimationEngine                 bigData.dat     0       1000    1       100     46000
+OpenCLZeroDUsingNativeOpsEstimationEngine   data.dat        0       1000    1       100     3570
+OpenCLZeroDWIthInlineEstimationEngine       data.dat        0       1000    1       100     4650
+OpenCLOneDEstimationEngine                  data.dat        0       1000    1       100     48
+OpenCLOneDEstimationEngine                  bigData.dat     0       1000    1       100     488
+OpenCLTwoDEstimationEngine                  data.dat        0       1000    1       100     3 (sic!)
+OpenCLTwoDEstimationEngine                  bigData.dat     0       1000    1       100     69
+
+Opcja verify pozwala zobaczyć liczbę błędów względem obliczenia na procesorze hosta z podziałem na rzędy wielkości
+(wyświetlane są wyniki kolejno dla rzędów błędu: 10E-4 i większych, 10E-5, ..., 10E-9 i mniejszych).
+Wszystkie z wyjątkiem ostatniego rozwiązania miały błędy tylko na 8 i 9 miejscu po przecinku, ostatnie ma takżę na 7mym.
