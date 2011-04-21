@@ -48,7 +48,6 @@ public class OpenCLOneDEstimationEngine implements EstimationEngine {
             long time = nanoTime();
             queue.putWriteBuffer(dataPointsBuffer, ASYNCHRONOUS)
                 .put1DRangeKernel(kernel, 0, samplingSettings.getSampleSize(), 1, events)
-                .putBarrier()
                 .putReadBuffer(estimatesBuffer, SYNCHRONOUS)
                 .finish()
                 .release();

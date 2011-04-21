@@ -10,9 +10,10 @@ import static com.jogamp.opencl.CLCommandQueue.Mode.PROFILING_MODE;
 import static com.jogamp.opencl.CLMemory.Mem.READ_ONLY;
 import static com.jogamp.opencl.CLMemory.Mem.WRITE_ONLY;
 import static java.lang.Math.PI;
+import static java.lang.Math.min;
 import static java.lang.System.nanoTime;
 
-public class OpenCLZeroDEstimationEngine implements EstimationEngine {
+public class OpenCLTwoDEstimationEngine implements EstimationEngine {
     private static final boolean ASYNCHRONOUS = false;
     private static final boolean SYNCHRONOUS = true;
 
@@ -26,7 +27,7 @@ public class OpenCLZeroDEstimationEngine implements EstimationEngine {
             CLCommandQueue queue = device.createCommandQueue(PROFILING_MODE);
 
             //TODO program path
-            CLProgram program = context.createProgram(new ClassPathResource("/pl/gajowy/kernelEstimator/kernels/ZeroD.cl").getInputStream()).build();
+            CLProgram program = context.createProgram(new ClassPathResource("/pl/gajowy/kernelEstimator/kernels/TwoD.cl").getInputStream()).build();
 
             CLBuffer<FloatBuffer> dataPointsBuffer = context.createFloatBuffer(dataPoints.length, READ_ONLY);
             dataPointsBuffer.getBuffer().put(dataPoints);
@@ -34,12 +35,16 @@ public class OpenCLZeroDEstimationEngine implements EstimationEngine {
 
             CLBuffer<FloatBuffer> estimatesBuffer = context.createFloatBuffer(samplingSettings.getSampleSize(), WRITE_ONLY);
 
+            int maxThreadsY = 1024; // TODO retrieve from device
+            int localThreadsY = min(maxThreadsY, Maths.biggestPowerOfTwoWithin(dataPoints.length));
+            int partialEstimatesSize = localThreadsY;
+
             CLKernel kernel = program.createCLKernel("estimate"); //TODO unhardcode
             kernel.putArg(bandwidth)
                     .putArg(dataPointsBuffer).putArg(dataPointsBuffer.getCLCapacity())
                     .putArg(samplingSettings.getStartPoint())
                     .putArg(samplingSettings.getDensity())
-                    .putArg(samplingSettings.getSampleSize())
+                    .putNullArg(4 * partialEstimatesSize)
                     .putArg(estimatesBuffer)
                     .putArg(new Float(PI).floatValue())
             ;
@@ -48,7 +53,7 @@ public class OpenCLZeroDEstimationEngine implements EstimationEngine {
 
             long time = nanoTime();
             queue.putWriteBuffer(dataPointsBuffer, ASYNCHRONOUS)
-                .putTask(kernel, events)
+                .put2DRangeKernel(kernel, 0, 0, samplingSettings.getSampleSize(), localThreadsY, 1, localThreadsY, events)
                 .putReadBuffer(estimatesBuffer, SYNCHRONOUS)
                 .finish()
                 .release();
@@ -80,4 +85,5 @@ public class OpenCLZeroDEstimationEngine implements EstimationEngine {
             context.release();
         }
     }
+
 }

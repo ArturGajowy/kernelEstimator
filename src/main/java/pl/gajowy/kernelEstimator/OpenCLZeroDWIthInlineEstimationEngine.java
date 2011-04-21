@@ -49,7 +49,6 @@ public class OpenCLZeroDWIthInlineEstimationEngine implements EstimationEngine {
             long time = nanoTime();
             queue.putWriteBuffer(dataPointsBuffer, ASYNCHRONOUS)
                 .putTask(kernel, events)
-                .putBarrier()
                 .putReadBuffer(estimatesBuffer, SYNCHRONOUS)
                 .finish()
                 .release();
