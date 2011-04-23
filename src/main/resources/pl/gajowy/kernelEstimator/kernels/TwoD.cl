@@ -31,12 +31,12 @@ kernel void estimate(
     }
     partialEstimates[j] = estimate;
 
-//    barrier(CLK_LOCAL_MEM_FENCE);
+    barrier(CLK_LOCAL_MEM_FENCE);
     for (int m = 1; m < partialEstimatesSize; m <<= 1) {
         if ((j % (2 * m)) == 0) {
             partialEstimates[j] += partialEstimates[j + m];
         }
-//        barrier(CLK_LOCAL_MEM_FENCE);
+        barrier(CLK_LOCAL_MEM_FENCE);
     }
 
     if (j == 0) {
