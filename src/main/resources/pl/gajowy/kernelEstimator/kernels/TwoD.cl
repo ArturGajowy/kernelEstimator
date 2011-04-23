@@ -13,7 +13,7 @@ kernel void estimate(
     private float PI
 ) {
     int i = get_global_id(0);
-    int j = get_global_id(1);
+    int j = get_local_id(1);
 
     //host has to assure that dataPointsSize >= get_local_size(1)
     int partialEstimatesSize = get_local_size(1);

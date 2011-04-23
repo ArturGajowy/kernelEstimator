@@ -1,6 +1,7 @@
 package pl.gajowy.kernelEstimator;
 
 import com.jogamp.opencl.*;
+import com.jogamp.opencl.util.Filter;
 import org.springframework.core.io.ClassPathResource;
 
 import java.io.IOException;
@@ -20,14 +21,13 @@ public class OpenCLTwoDEstimationEngine implements EstimationEngine {
     public CalculationOutcome estimate(float bandwidth, float[] dataPoints, SamplingSettings samplingSettings) {
 
         CLContext context = CLContext.create();
-        System.out.println(context);
 
         try {
             CLDevice device = context.getMaxFlopsDevice();
             CLCommandQueue queue = device.createCommandQueue(PROFILING_MODE);
 
             //TODO program path
-            CLProgram program = context.createProgram(new ClassPathResource("/pl/gajowy/kernelEstimator/kernels/TwoD.cl").getInputStream()).build();
+            CLProgram program = context.createProgram(new ClassPathResource("kernels/TwoD.cl", OpenCLTwoDEstimationEngine.class ).getInputStream()).build();
 
             CLBuffer<FloatBuffer> dataPointsBuffer = context.createFloatBuffer(dataPoints.length, READ_ONLY);
             dataPointsBuffer.getBuffer().put(dataPoints);
@@ -35,7 +35,7 @@ public class OpenCLTwoDEstimationEngine implements EstimationEngine {
 
             CLBuffer<FloatBuffer> estimatesBuffer = context.createFloatBuffer(samplingSettings.getSampleSize(), WRITE_ONLY);
 
-            int maxThreadsY = 1024; // TODO retrieve from device
+            int maxThreadsY = 8; // TODO retrieve from device
             int localThreadsY = min(maxThreadsY, Maths.firstPowerOfTwoBeingAtLeast(dataPoints.length));
             int partialEstimatesSize = localThreadsY;
 
@@ -53,16 +53,19 @@ public class OpenCLTwoDEstimationEngine implements EstimationEngine {
 
             long time = nanoTime();
             queue.putWriteBuffer(dataPointsBuffer, ASYNCHRONOUS)
-                .put2DRangeKernel(kernel, 0, 0, samplingSettings.getSampleSize(), localThreadsY, 1, localThreadsY, events)
-                .putReadBuffer(estimatesBuffer, SYNCHRONOUS)
-                .finish()
-                .release();
+                    .put2DRangeKernel(kernel, 0, 0,
+                            samplingSettings.getSampleSize(), samplingSettings.getSampleSize() * localThreadsY,
+                            1, localThreadsY,
+                            events)
+                    .putReadBuffer(estimatesBuffer, SYNCHRONOUS)
+                    .finish()
+                    .release();
 
             time = nanoTime() - time;
 
             CLEvent probe = events.getEvent(0);
             long timeFromProfiling = probe.getProfilingInfo(CLEvent.ProfilingCommand.END)
-                      - probe.getProfilingInfo(CLEvent.ProfilingCommand.START);
+                    - probe.getProfilingInfo(CLEvent.ProfilingCommand.START);
             events.release();
 
             FloatBuffer resultBuffer = estimatesBuffer.getBuffer();
