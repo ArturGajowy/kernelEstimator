@@ -35,7 +35,7 @@ public class OpenCLTwoDEstimationEngine implements EstimationEngine {
 
             CLBuffer<FloatBuffer> estimatesBuffer = context.createFloatBuffer(samplingSettings.getSampleSize(), WRITE_ONLY);
 
-            int maxThreadsY = 16; // TODO retrieve from device
+            int maxThreadsY = 32; // TODO retrieve from device
             int localThreadsY = min(maxThreadsY, Maths.firstPowerOfTwoBeingAtLeast(dataPoints.length));
             int partialEstimatesSize = localThreadsY;
 
