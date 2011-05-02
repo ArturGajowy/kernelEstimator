@@ -15,3 +15,4 @@ OpenCLTwoDEstimationEngine                  bigData.dat     0       1000    1   
 Opcja verify pozwala zobaczyć liczbę błędów względem obliczenia na procesorze hosta z podziałem na rzędy wielkości
 (wyświetlane są wyniki kolejno dla rzędów błędu: 10E-4 i większych, 10E-5, ..., 10E-9 i mniejszych).
 Wszystkie z wyjątkiem ostatniego rozwiązania miały błędy tylko na 8 i 9 miejscu po przecinku, ostatnie ma takżę na 7mym.
+
